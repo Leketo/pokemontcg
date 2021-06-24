@@ -5,19 +5,16 @@ import {
     CardMedia,
     CardContent,
     Typography,
-    CircularProgress,
-    Toolbar,
-    AppBar,
-    TextField,
+    CircularProgress
   } from "@material-ui/core";
 
 import { fade, makeStyles } from "@material-ui/core/styles";
 import { toFirstCharUppercase } from "./Constant";
-import { Navbar, Nav, Form, FormControl, Button } from "react-bootstrap";
+import { Navbar, Nav, FormControl } from "react-bootstrap";
 import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
-    pokedexContainer: {
+    pokemontcgContainer: {
       paddingTop: "20px",
       paddingLeft: "50px",
       paddingRight: "50px",
@@ -27,22 +24,6 @@ const useStyles = makeStyles((theme) => ({
     },
     cardContent: {
       textAlign: "center",
-    },
-    searchContainer: {
-      display: "flex",
-      backgroundColor: fade(theme.palette.common.white, 0.15),
-      paddingLeft: "20px",
-      paddingRight: "20px",
-      marginTop: "5px",
-      marginBottom: "5px",
-    },
-    searchIcon: {
-      alignSelf: "flex-end",
-      marginBottom: "5px",
-    },
-    searchInput: {
-      width: "200px",
-      margin: "5px",
     },
   }));
   
@@ -54,44 +35,43 @@ const Pokemontcg = (props) => {
   const [filter, setFilter] = useState("");
 
     const _handleKeyDown = (e) => {
-        console.log(e.key)
+       setFilter(e.target.value.toLowerCase())
     }
 
     useEffect(() => {
-        axios
-        .get(`https://api.pokemontcg.io/v1/cards?subtype=Basic`)
+        axios.get(`https://api.pokemontcg.io/v1/cards?subtype=Basic`)
           .then(function (response) {
             const { data } = response;
             const { results } = data;
-            const newPokemonData = {};
-            const newPokemonData2 = [];
+            const pokemonData = {};
             data.cards.forEach((pokemon, index) => {
-                newPokemonData[index + 1] = {
+                pokemonData[index + 1] = {
                     id: index + 1,
-                    name: pokemon.name,
-                    sprite: pokemon.imageUrl
+                    name: pokemon.name.toLowerCase(),
+                    pokemonImage: pokemon.imageUrl
                   };
             });  
-            setPokemonData(newPokemonData);
+            setPokemonData(pokemonData);
           });
       }, []);
 
 
      const getPokemonCard = (pokemonId) => {
-        const { id, name, sprite } = pokemonData[pokemonId];
+        const { id, name, pokemonImage } = pokemonData[pokemonId];
         return (
           <Grid item xs={4} key={pokemonId}>
             <Card onClick={() => history.push(`/${id}`)}>
               <CardMedia
                 className={classes.cardMedia}
-                image={sprite}
-                style={{ width: "130px", height: "130px" }}
+                image={pokemonImage}
+                style={{ width: "140px", height: "140px" }}
               />
               <CardContent className={classes.cardContent}>
                 <Typography>{`${id}. ${toFirstCharUppercase(name)}`}</Typography>
               </CardContent>
             </Card>
           </Grid>
+          
         );
       };
     
@@ -102,15 +82,18 @@ const Pokemontcg = (props) => {
             <Nav className="mr-auto">
             </Nav>
             
-             <FormControl type="text" placeholder="Ingrese pokemon"
-                   className="mr-sm-2" />
+             <FormControl type="text" 
+                       placeholder="Enter pokemon"
+                       className="mr-sm-2" 
+                       onChange={_handleKeyDown} />
            
            </Navbar.Collapse>
         </Navbar>
 
         <hr />
+
         {pokemonData ? (
-        <Grid container spacing={2} className={classes.pokedexContainer}>
+        <Grid container spacing={2} className={classes.pokemontcgContainer}>
           {Object.keys(pokemonData).map(
             (pokemonId) =>
               pokemonData[pokemonId].name.includes(filter) &&
