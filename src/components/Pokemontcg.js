@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { useEffect, useState } from 'react';
 import {
   Grid, Card, CardMedia, CardContent, CircularProgress, Typography,
@@ -20,8 +21,9 @@ const useStyles = makeStyles(() => ({
     textAlign: 'center',
   },
 }));
-const Pokemontcg = () => {
+const Pokemontcg = (props) => {
   const classes = useStyles();
+  const { history } = props;
   const [pokemonData, setPokemonData] = useState([]);
   const [filter, setFilter] = useState('');
 
@@ -49,7 +51,7 @@ const Pokemontcg = () => {
     const { id, name, pokemonImage } = pokemonData[pokemonId];
     return (
       <Grid item xs={4} key={pokemonId}>
-        <Card>
+        <Card onClick={() => history.push(`/${id}`)}>
           <CardMedia
             className={classes.cardMedia}
             image={pokemonImage}
