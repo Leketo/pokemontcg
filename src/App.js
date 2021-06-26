@@ -7,18 +7,16 @@ import Pokemon from './components/Pokemon';
 
 function App() {
   return (
-    <div className="App-head">
-      <Router>
-        <Switch>
-          <Route exact path="/" render={(props) => <Pokemontcg {...props} />} />
-          <Route
-            exact
-            path="/:pokemonId"
-            render={(props) => <Pokemon {...props} />}
-          />
-        </Switch>
-      </Router>
-    </div>
+    <Router>
+      <Switch>
+        <Route exact path="/" render={(props) => <Pokemontcg {...props} />} />
+        <Route
+          exact
+          path="/:pokemonId"
+          render={(props) => <Pokemon {...props} />}
+        />
+      </Switch>
+    </Router>
   );
 }
 

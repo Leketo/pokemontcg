@@ -4,7 +4,7 @@ import {
   Grid, Card, CardMedia, CardContent, CircularProgress, Typography,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import { Navbar, Nav, FormControl } from 'react-bootstrap';
+import { FormControl } from 'react-bootstrap';
 import axios from 'axios';
 import { toFirstCharUppercase } from './Constant';
 
@@ -32,7 +32,7 @@ const Pokemontcg = (props) => {
   };
 
   useEffect(() => {
-    axios.get('https://api.pokemontcg.io/v1/cards?subtype=Basic')
+    axios.get('https://api.pokemontcg.io/v1/cards')
       .then((response) => {
         const { data } = response;
         const pokeData = {};
@@ -41,6 +41,7 @@ const Pokemontcg = (props) => {
             id: index + 1,
             name: pokemon.name.toLowerCase(),
             pokemonImage: pokemon.imageUrl,
+            pokeId: pokemon.id,
           };
         });
         setPokemonData(pokeData);
@@ -48,14 +49,16 @@ const Pokemontcg = (props) => {
   }, []);
 
   const getPokemonCard = (pokemonId) => {
-    const { id, name, pokemonImage } = pokemonData[pokemonId];
+    const {
+      id, pokeId, name, pokemonImage,
+    } = pokemonData[pokemonId];
     return (
-      <Grid item xs={4} key={pokemonId}>
-        <Card onClick={() => history.push(`/${id}`)}>
+      <Grid item xs={2} key={pokemonId}>
+        <Card onClick={() => history.push(`/${pokeId}`)}>
           <CardMedia
             className={classes.cardMedia}
             image={pokemonImage}
-            style={{ width: '140px', height: '140px' }}
+            style={{ width: '120px', height: '170px' }}
           />
           <CardContent className={classes.cardContent}>
             <Typography>{`${id}. ${toFirstCharUppercase(name)}`}</Typography>
@@ -67,20 +70,13 @@ const Pokemontcg = (props) => {
 
   return (
     <>
-      <Navbar bg="light" expand="lg">
-        <Navbar.Collapse id="basic-navbar-nav">
-          <Nav className="mr-auto" />
-          <FormControl
-            type="text"
-            placeholder="Enter pokemon"
-            className="mr-sm-2"
-            onChange={handleKeyDown}
-          />
-        </Navbar.Collapse>
-      </Navbar>
-
-      <hr />
-
+      <FormControl
+        size="lg"
+        type="text"
+        placeholder="Enter pokemon"
+        className="mr-sm-2"
+        onChange={handleKeyDown}
+      />
       {pokemonData ? (
         <Grid container spacing={2} className={classes.pokemontcgContainer}>
           {Object.keys(pokemonData).map(
